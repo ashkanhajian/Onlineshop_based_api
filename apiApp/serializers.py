@@ -27,21 +27,22 @@ class CartItemListSerializer(serializers.ModelSerializer):
     sub_total = serializers.SerializerMethodField()
     class Meta:
         model = CartItem
-        fields = ['id', 'product', 'quantity','sub_total']
+        fields = ['id', 'products','sub_total' ,'quantity']
 
     def get_sub_total(self, cartitem):
         total = cartitem.product.price * cartitem.quantity
         return total
 
 class CartSerializer(serializers.ModelSerializer):
-    cart_items = CartItemListSerializer(many=True, read_only=True)
+    cartitems = CartItemListSerializer(read_only=True, many=True)
     cart_total = serializers.SerializerMethodField()
     class Meta:
         model = Cart
-        fields = ['id', 'cart_items','cart_code']
-    def get_cart_items(self, cart):
-        items = cart.cart_items.all()
-        total = sum([items.quantity * items.price for items in items])
+        fields = ["id", "cart_code", "cartitems", "cart_total"]
+
+    def get_cart_total(self, cart):
+        items = cart.cartitems.all()
+        total = sum([item.quantity * item.product.price for item in items])
         return total
 
 class CartStatusSerializer(serializers.ModelSerializer):

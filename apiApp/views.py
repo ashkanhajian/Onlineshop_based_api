@@ -30,12 +30,12 @@ def category_detail(request, slug):
     return Response(serializer.data)
 
 @api_view(['POST'])
-def add_to_cart(request, slug):
+def add_to_cart(request):
     cart_code = request.data.get('cart_code')
     product_id = request.data.get('product_id')
     cart, created = Cart.objects.get_or_create(cart_code=cart_code)
     product = Product.objects.get(id=product_id)
-    cartitem, created = CartItem.objects.get(cart=cart, product=product)
+    cartitem, created = CartItem.objects.get_or_create(cart=cart, product=product)
     cartitem.quantity += 1
     cartitem.save()
     serializer = CartSerializer(cart)
