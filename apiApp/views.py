@@ -1,8 +1,8 @@
 from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from apiApp.models import Product, Category
-from apiApp.serializers import ProductListSerializer, ProductDetailSerializer, CategoryListSerializer, CategoryDetailSerializer
+from apiApp.models import Product, Category, Cart, CartItem
+from apiApp.serializers import *
 
 
 # Create your views here.
@@ -27,4 +27,16 @@ def category_list(request):
 def category_detail(request, slug):
     category = Category.objects.get(slug=slug)
     serializer = CategoryDetailSerializer(category)
+    return Response(serializer.data)
+
+@api_view(['POST'])
+def add_to_cart(request, slug):
+    cart_code = request.data.get('cart_code')
+    product_id = request.data.get('product_id')
+    cart, created = Cart.objects.get_or_create(cart_code=cart_code)
+    product = Product.objects.get(id=product_id)
+    cartitem, created = CartItem.objects.get(cart=cart, product=product)
+    cartitem.quantity += 1
+    cartitem.save()
+    serializer = CartSerializer(cart)
     return Response(serializer.data)
