@@ -38,7 +38,7 @@ def add_to_cart(request):
     cartitem, created = CartItem.objects.get_or_create(cart=cart, product=product)
     cartitem.quantity += 1
     cartitem.save()
-    serializer = CartSerializer(cart)
+    serializer = CartSerializer(cartitem.cart)
     return Response(serializer.data)
 @api_view(['PUT'])
 def update_cart_quantity(request):
@@ -48,5 +48,5 @@ def update_cart_quantity(request):
     cartitem = CartItem.objects.get(id=cartitem_id)
     cartitem.quantity = quantity
     cartitem.save()
-    serializer = CartSerializer(cartitem)
-    return Response({'data':serializer.data, 'massage':"CartItem updated"})
+    serializer = CartSerializer(cartitem.cart)
+    return Response({'data': serializer.data, 'message': "CartItem updated"})
