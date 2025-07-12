@@ -40,3 +40,13 @@ def add_to_cart(request):
     cartitem.save()
     serializer = CartSerializer(cart)
     return Response(serializer.data)
+@api_view(['PUT'])
+def update_cart_quantity(request):
+    cartitem_id = request.data.get('item_id')
+    quantity = request.data.get("quantity")
+    quantity = int(quantity)
+    cartitem = CartItem.objects.get(id=cartitem_id)
+    cartitem.quantity = quantity
+    cartitem.save()
+    serializer = CartSerializer(cartitem)
+    return Response({'data':serializer.data, 'massage':"CartItem updated"})
