@@ -1,9 +1,12 @@
+import email
+
 from django.shortcuts import render
+from django.contrib.auth import get_user_model
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from apiApp.models import Product, Category, Cart, CartItem
 from apiApp.serializers import *
-
+User = get_user_model()
 
 # Create your views here.
 @api_view(['GET'])
@@ -50,3 +53,14 @@ def update_cart_quantity(request):
     cartitem.save()
     serializer = CartSerializer(cartitem.cart)
     return Response({'data': serializer.data, 'message': "CartItem updated"})
+
+@api_view(['POST'])
+def add_review(request):
+    product_id = request.data.get('product_id')
+    rating = request.data.get('rating')
+    review = request.data.get('review')
+    product = Product.objects.get(id=product_id)
+    user = User.objects.get(email=request.data.get('email'))
+    review = Review.objects.create(product=product, user=user, rating=rating, review=review)
+    serializer = ReviewSerializer(review)
+    return Response(serializer.data)
