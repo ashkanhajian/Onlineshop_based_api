@@ -68,3 +68,20 @@ def add_review(request):
     review = Review.objects.create(product=product, user=user, rating=rating, review=review)
     serializer = ReviewSerializer(review)
     return Response(serializer.data)
+
+@api_view(['PUT'])
+def update_review(request,pk):
+    review_id = request.object.get(id = pk)
+    review = request.data.get('review')
+    rating = request.data.get('rating')
+    review.rating = rating
+    review.review = review
+    review.save()
+    serializer = ReviewSerializer(review)
+    return Response(serializer.data)
+
+@api_view(['DELETE'])
+def delete_review(request, pk):
+    review= request.object.get(id=pk)
+    review.delete()
+    return Response({'message': "Review deleted"})
