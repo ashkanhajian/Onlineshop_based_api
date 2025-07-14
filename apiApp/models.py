@@ -62,7 +62,7 @@ class Review(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='reviews')
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='reviews')
     rating = models.PositiveIntegerField(default=0, choices=RATING_CHOICES)
-    reviewed = models.TextField(blank=True, null=True)
+    review = models.TextField(blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 

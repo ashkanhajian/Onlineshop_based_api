@@ -1,29 +1,28 @@
-from django.db.models import Avg
 from django.db.models.signals import post_save, post_delete
-from django.dispatch import  receiver
-from apiApp.models import *
-
+from django.dispatch import receiver
+from django.db.models import Avg
+from .models import Review, ProductRating
 
 @receiver(post_save, sender=Review)
 def update_rating(sender, instance, **kwargs):
     product = instance.product
-    review = product.reviews.all()
-    total_reviews = review.count()
-    review_average = review.aggregate(Avg('rating'))['rating__avg'] or 0.0
-    product_rating = ProductRating.objects.get_or_create(product=product)
+    reviews = product.reviews.all()
+    total_reviews = reviews.count()
+    review_average = reviews.aggregate(Avg('rating'))['rating__avg'] or 0.0
+
+    product_rating, created = ProductRating.objects.get_or_create(product=product)
     product_rating.average_rating = review_average
     product_rating.total = total_reviews
-
-    product.save()
+    product_rating.save()  # ✅ حتماً اینو ذخیره کن
 
 @receiver(post_delete, sender=Review)
 def delete_rating(sender, instance, **kwargs):
     product = instance.product
-    review = product.reviews.all()
-    total_reviews = review.count()
-    review_average = review.aggregate(Avg('rating'))['rating__avg'] or 0.0
-    product_rating = ProductRating.objects.get_or_create(product=product)
+    reviews = product.reviews.all()
+    total_reviews = reviews.count()
+    review_average = reviews.aggregate(Avg('rating'))['rating__avg'] or 0.0
+
+    product_rating, created = ProductRating.objects.get_or_create(product=product)
     product_rating.average_rating = review_average
     product_rating.total = total_reviews
-
-    product.save()
+    product_rating.save()  # ✅ اینم ذخیره لازم داره
