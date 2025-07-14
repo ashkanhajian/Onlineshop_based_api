@@ -63,6 +63,8 @@ def add_review(request):
     review = request.data.get('review')
     product = Product.objects.get(id=product_id)
     user = User.objects.get(email=request.data.get('email'))
+    if Review.objects.filter(product=product, user=user).exists():
+        return Response({'message': "You already drop a review."})
     review = Review.objects.create(product=product, user=user, rating=rating, review=review)
     serializer = ReviewSerializer(review)
     return Response(serializer.data)
