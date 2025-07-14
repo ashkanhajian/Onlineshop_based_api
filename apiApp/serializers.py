@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
-from rest_framework.authtoken.admin import User
+User = get_user_model()
+
 
 from apiApp.models import Product, Category, CartItem, Cart, Review
 

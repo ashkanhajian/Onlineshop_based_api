@@ -1,12 +1,14 @@
 import email
 
 from django.shortcuts import render
-from django.contrib.auth import get_user_model
+
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from apiApp.models import Product, Category, Cart, CartItem
 from apiApp.serializers import *
+from django.contrib.auth import get_user_model
 User = get_user_model()
+
 
 # Create your views here.
 @api_view(['GET'])
