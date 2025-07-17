@@ -13,7 +13,7 @@ def update_rating(sender, instance, **kwargs):
     product_rating, created = ProductRating.objects.get_or_create(product=product)
     product_rating.average_rating = review_average
     product_rating.total = total_reviews
-    product_rating.save()  # ✅ حتماً اینو ذخیره کن
+    product_rating.save()
 
 @receiver(post_delete, sender=Review)
 def delete_rating(sender, instance, **kwargs):
@@ -25,4 +25,4 @@ def delete_rating(sender, instance, **kwargs):
     product_rating, created = ProductRating.objects.get_or_create(product=product)
     product_rating.average_rating = review_average
     product_rating.total = total_reviews
-    product_rating.save()  # ✅ اینم ذخیره لازم داره
+    product_rating.save()
