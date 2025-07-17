@@ -3,7 +3,7 @@ from rest_framework import serializers
 User = get_user_model()
 
 
-from apiApp.models import Product, Category, CartItem, Cart, Review
+from apiApp.models import Product, Category, CartItem, Cart, Review, Whislist
 
 
 class ProductListSerializer(serializers.ModelSerializer):
@@ -68,3 +68,10 @@ class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review
         fields = ['id','user','rating','review','created','updated']
+
+class WishlistSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+    products = ProductListSerializer(many=True, read_only=True)
+    class Meta:
+        model = Whislist
+        fields = ['id','user','product','created']

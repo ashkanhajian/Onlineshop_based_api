@@ -1,10 +1,10 @@
-import email
+
 
 from django.shortcuts import render
 
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from apiApp.models import Product, Category, Cart, CartItem
+from apiApp.models import Product, Category, Cart, CartItem, Whislist
 from apiApp.serializers import *
 from django.contrib.auth import get_user_model
 User = get_user_model()
@@ -71,17 +71,43 @@ def add_review(request):
 
 @api_view(['PUT'])
 def update_review(request,pk):
-    review_id = request.object.get(id = pk)
-    review = request.data.get('review')
+    review = Review.objects.get(id = pk)
+    review_text = request.data.get('review')
     rating = request.data.get('rating')
     review.rating = rating
-    review.review = review
+    review.review = review_text
     review.save()
     serializer = ReviewSerializer(review)
     return Response(serializer.data)
 
 @api_view(['DELETE'])
 def delete_review(request, pk):
-    review= request.object.get(id=pk)
+    review= Review.objects.get(id=pk)
     review.delete()
     return Response({'message': "Review deleted"})
+
+
+@api_view(['DELETE'])
+def delete_cartitem(request, pk):
+    cartitem= CartItem.objects.get(id=pk)
+    cartitem.delete()
+    return Response({'message': "CartItem deleted"})
+
+
+@api_view(['POST'])
+def add_to_whishlist(request):
+    email = request.data.get('email')
+    product_id = request.data.get('product_id')
+    user = User.objects.get(email=email)
+    product = Product.objects.get(id=product_id)
+
+    whislist = Whislist.objects.filter(user=user, product=product)
+    if whislist:
+        whislist.delete()
+        return Response({'message': "Whislist deleted"},status=204)
+
+    new_wishlist = Whislist.objects.create(user=user, product=product)
+    serializer = WishlistSerializer(new_wishlist)
+    return Response(serializer.data)
+
+

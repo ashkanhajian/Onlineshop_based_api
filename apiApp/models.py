@@ -78,3 +78,14 @@ class ProductRating(models.Model):
     total = models.PositiveIntegerField(default=0)
     def __str__(self):
         return f"{self.product.name}-{self.average_rating}({self.total} reviews)"
+
+class Whislist(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='whislists')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='whislists')
+    created = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'product')
+
+    def __str__(self):
+        return f"{self.user.username}'s Whislist"

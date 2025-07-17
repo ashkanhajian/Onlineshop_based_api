@@ -21,4 +21,4 @@ class CategoryAdmin(admin.ModelAdmin):
     ordering = ('name',)
 admin.site.register(Category, CategoryAdmin)
 
-admin.site.register([Cart, CartItem,Review, ProductRating])
+admin.site.register([Cart, CartItem,Review, ProductRating,Whislist])
