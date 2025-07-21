@@ -1,7 +1,7 @@
 
 
 from django.shortcuts import render
-
+from django.db.models import  Q
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from apiApp.models import Product, Category, Cart, CartItem, Whislist
@@ -110,4 +110,15 @@ def add_to_whishlist(request):
     serializer = WishlistSerializer(new_wishlist)
     return Response(serializer.data)
 
+@api_view(['GET'])
+def product_search(request):
+    query = request.qeury_params.get('query')
+    if not query:
+        return Response({'message': "You need to enter a query."})
+    products = Product.objects.filter(Q(name__icontains=query)|
+                                      Q(description__icontains=query)|
+                                      Q(categories__name__icontains=query)|
+                                      Q(price__icontains=query))
+    serializer = ProductListSerializer(products, many=True)
+    return Response(serializer.data)
 
